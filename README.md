@@ -15,6 +15,8 @@
 
 [Проект на GitHub Pages](https://bmazurme.github.io/cards/)
 
+...
+
 ### Стек технологий
 HTML, CSS, JS, JSX, React.js
 
@@ -22,16 +24,12 @@ HTML, CSS, JS, JSX, React.js
 
 Клонируйте репозиторий на компьютер:
 
-`git clone git@github.com:bmazurme/cards.git`
-
-In the project directory, you can run:
-
-`npm start`
-
-`npm run build`
-
-`npm run eject`
+`git@github.com:bmazurme/cards.git`
 
 Установите зависисмости:
 
 `npm install`
+
+Запустите проект:
+
+`npm start`
