@@ -1,7 +1,7 @@
 function Footer() {
     return(
       <div>
-        <p>footer</p>
+        <p>bmazur 2022 footer</p>
       </div>
     );
 }

@@ -4,9 +4,8 @@ import { cards } from "../utils/initialCards";
 
 function Main() {
   const [score, setScore] = React.useState(0);
-  const [collection, setCollection] = React.useState(cards);
+  const [collection, setCollection] = React.useState([]);
   const [riddle, setRiddle] = React.useState({key:'', value: ''});
-  const [result, setResult] = React.useState('');
   const [disabled, setDisabled] = React.useState(false);
 
   function reload() {
@@ -20,57 +19,76 @@ function Main() {
       }
     }
 
-    arr.forEach(element => {
-      collection.push(cards[element]);
+    arr.forEach((element, index) => {
+      const item = cards[element];
+      item['isCorrect'] = false;
+      item['isInCorrect'] = false;
+      item['id'] = index;
+      collection.push(item);
     });
+
     setCollection(collection);
     let index = Math.floor(Math.random() * 4);
     setRiddle(collection[index]);
   }
 
-  function check(value) {
+  function check(button, props) {
     setDisabled(true);
+    let newRows = [];
 
-    if (value === riddle.value) {
-
-
-      
-         setScore( () => {return( score + 1)})
-
-        console.log(score)  ;
-      
-      setResult('Yes');
+    if (button.value === riddle.value) {
+      collection.map(
+        row => {
+          if (row.id === props.card.id) {
+              let editedRow = { ...row, isCorrect: true };
+              return newRows.push(editedRow);
+          } else {
+              return newRows.push(row);
+          }
+        });
+      setScore( () => {return( score + 1)});
     } else {
-      setResult('No');
+      collection.map(
+        row => {
+          if (row.id === props.card.id) {
+              let editedRow = { ...row, isInCorrect: true };
+              return newRows.push(editedRow);
+          } else {
+              return newRows.push(row);
+          }
+        });
     }
-    
+    setCollection(newRows);
     setTimeout(clearResult, 1000);
   }
 
   function clearResult() {
     setDisabled(false);
-    setResult('');
-    //if (score === 10){alert('Score 10!')}
     reload();
   }
 
   return(
-    <>
-      <button aria-label="reload" 
-        type="button" 
-        onClick={reload}>Reload</button>
-      <h2>{riddle.key}</h2>
-      <Form
-        disabled={disabled}
-        result={result}
-        score={score}
-        handleClick={check}
-        first={collection[0].value}
-        second={collection[1].value}
-        third={collection[2].value}
-        fourth={collection[3].value}
-      />
-    </>
+    <div className="container">
+      <div className="sidebar">
+        <button className="button" 
+          aria-label="reload" 
+          type="button" 
+          onClick={reload}>Start</button>
+
+        <h3>Score: {score}</h3>
+        <h4>{riddle.key}</h4>
+      </div>
+
+      <div className="sidebar_right">
+        <Form
+          disabled={disabled}
+          score={score}
+          handleClick={check}
+          collection={collection}
+        />
+      </div>
+
+    </div>
   );
 }
 
