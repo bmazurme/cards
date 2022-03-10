@@ -1,9 +1,9 @@
 function Footer() {
-    return(
-      <div>
-        <p>bmazur 2022 footer</p>
-      </div>
-    );
+  return(
+    <div className="footer">
+      <p className="footer__copyright">&copy; bmazur 2022</p>
+    </div>
+  );
 }
 
 export default Footer;

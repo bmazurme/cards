@@ -9,56 +9,68 @@ function Main() {
   const [disabled, setDisabled] = React.useState(false);
 
   function reload() {
-    const arr = [];
-    const collection = [];
+    const choises = generateChoises(cards);
+    const collection = getCollection(choises, cards);
+    setCollection(collection);
+    getRiddle(collection);
+  }
 
+  function generateChoises(cards) {
+    const arr = [];
     while (arr.length<4) {
       let val = Math.floor(Math.random() * cards.length);
       if (!arr.includes(val)) {
         arr.push(val);
       }
     }
+    return arr;
+  }
 
-    arr.forEach((element, index) => {
+  function getCollection(choises, cards) {
+    const collection = [];
+    choises.forEach((element, index) => {
       const item = cards[element];
       item['isCorrect'] = false;
       item['isInCorrect'] = false;
       item['id'] = index;
       collection.push(item);
     });
+    return collection;
+  }
 
-    setCollection(collection);
+  function getRiddle(collection) {
     let index = Math.floor(Math.random() * 4);
     setRiddle(collection[index]);
   }
 
+  function getNewCollection(collection, props, correct) {
+    let newCollection = [];
+    collection.map(
+      row => {
+        if (row.id === props.card.id) {
+            const editedRow = correct
+             ? { ...row, isCorrect: true }
+             : { ...row, isInCorrect: true };
+          return newCollection.push(editedRow);
+        } else {
+          return newCollection.push(row);
+        }
+      });
+    return newCollection;
+  }
+
   function check(button, props) {
     setDisabled(true);
-    let newRows = [];
+    let newCollection = [];
 
     if (button.value === riddle.value) {
-      collection.map(
-        row => {
-          if (row.id === props.card.id) {
-              let editedRow = { ...row, isCorrect: true };
-              return newRows.push(editedRow);
-          } else {
-              return newRows.push(row);
-          }
-        });
+      newCollection = getNewCollection(collection, props, true);
       setScore( () => {return( score + 1)});
     } else {
-      collection.map(
-        row => {
-          if (row.id === props.card.id) {
-              let editedRow = { ...row, isInCorrect: true };
-              return newRows.push(editedRow);
-          } else {
-              return newRows.push(row);
-          }
-        });
+      newCollection = getNewCollection(collection, props, false);
     }
-    setCollection(newRows);
+    
+    setCollection(newCollection);
     setTimeout(clearResult, 1000);
   }
 
@@ -74,11 +86,9 @@ function Main() {
           aria-label="reload" 
           type="button" 
           onClick={reload}>Start</button>
-
         <h3>Score: {score}</h3>
         <h4>{riddle.key}</h4>
       </div>
-
       <div className="sidebar_right">
         <Form
           disabled={disabled}
@@ -87,7 +97,6 @@ function Main() {
           collection={collection}
         />
       </div>
-
     </div>
   );
 }
